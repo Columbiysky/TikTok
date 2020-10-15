@@ -3,8 +3,8 @@ package com.company;
 public class Main {
 
     public static void main(String[] args) {
-        Game g = new Game();
-        g.Play();
+        MainFrame mf = new MainFrame(new Game());
+        mf.setVisible(true);
     }
 
 }

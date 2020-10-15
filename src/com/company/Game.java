@@ -1,13 +1,15 @@
 package com.company;
 
-import java.util.Objects;
-import java.util.Scanner;
+import javax.swing.*;
 
 public class Game {
 
     public Field field;
     public Player player1;
     public Player player2;
+    private int turnCount = 0;
+    public char currentMark;
+    String temp;
 
     public Game(){
         field = new Field();
@@ -15,11 +17,35 @@ public class Game {
         player2 = new Player('o');
     }
 
-    public void DoTurn(int TurnCount, int row, int col){
-        if(TurnCount % 2 == 0)
-            field.GameField[row][col] = player1.Mark;
-        else
-            field.GameField[row][col] = player2.Mark;
+    public void DoTurn(int row, int col){
+        if(turnCount < field.size * field.size) {
+            if (turnCount % 2 == 0) currentMark = player1.Mark;
+            else currentMark = player2.Mark;
+
+            if (field.GameField[row][col] != player1.Mark && field.GameField[row][col] != player2.Mark)
+                field.GameField[row][col] = currentMark;
+            else {
+                JOptionPane.showMessageDialog(null, "This block already filled!!!");
+                return;
+            }
+
+            if (Checker(field.GameField, row, col)) {
+                if (turnCount % 2 == 0) {
+                    JOptionPane.showMessageDialog(null, "X WON!!!");
+                    Runtime.getRuntime().exit(0);
+                }
+                else {
+                    JOptionPane.showMessageDialog(null, "O WON!!!");
+                    Runtime.getRuntime().exit(0);
+                }
+            }
+
+            turnCount++;
+        }
+        else {
+            JOptionPane.showMessageDialog(null, "TIE!!!");
+            Runtime.getRuntime().exit(0);
+        }
     }
 
     private boolean Checker(char field[][], int row, int col){
@@ -42,14 +68,17 @@ public class Game {
         return  false;
     }
 
+    public void GUIPlay(){
+
+    }
+
     public void Play(/*int FieldSize*/){
         field.Render();
 
         System.out.println("Enter indeces.");
+        JOptionPane.showMessageDialog(null,"Enter indices!");
 
-        Scanner sc = new Scanner(System.in);
         int count = 0;
-        String temp;
         char[] tempArray;
 
         while (count < field.size*field.size){
@@ -57,13 +86,13 @@ public class Game {
             if (count%2==0) System.out.println("X turn!");
             else  System.out.println("O turn!");
 
-            temp = sc.next();
             tempArray = temp.toCharArray();
 
             if(field.GameField[Character.getNumericValue(tempArray[0]) - 1][Character.getNumericValue(tempArray[1]) - 1] == 'o' ||
                     field.GameField[Character.getNumericValue(tempArray[0]) - 1][Character.getNumericValue(tempArray[1]) - 1] == 'x')
             {
                 System.out.println("These indices have been already used, select others!");
+
 
                 System.out.println();
                 field.Render();
